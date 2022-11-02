@@ -1,8 +1,4 @@
-const  express = require('express');
-const axios = require('axios');
-const router = express.Router();
-
-const { Sequelize, DataTypes, DATE } = require("sequelize");
+const { Sequelize, DataTypes } = require("sequelize");
 
 const sequelize = new Sequelize(
     'btp',
@@ -17,7 +13,7 @@ const sequelize = new Sequelize(
 const Motor = sequelize.define('motor', {
     motorId : {
         type: DataTypes.STRING,
-        primaryKey:true
+        allowNull: false
     },
     motorName: {
         type: DataTypes.STRING,
@@ -56,20 +52,7 @@ const Motor = sequelize.define('motor', {
         allowNull: false
     },
 
-},{
-    timestamps: false
 });
-
-const Parameters = sequelize.define('parameters', {
-    current: {
-        type: DataTypes.DECIMAL,
-        allowNull: false
-    },
-    RPM: {
-        type: DataTypes.DECIMAL,
-        allowNull: true
-    }
-})
 
 sequelize.authenticate().then(() => {
     console.log('Connection has been established successfully.');
@@ -77,12 +60,10 @@ sequelize.authenticate().then(() => {
     console.error('Unable to connect to the database: ', error);
 });
 
-const registerMotor = async(data) => {
-    const obj = JSON.parse(JSON.stringify(data));
-    var motorDetails;
-    for(key in obj) motorDetails = JSON.parse(key)
+const registerMotor = async(motorDetails) => {
+    console.log(motorDetails)
     const motor = await Motor.create({
-        motorId : motorDetails["motorID"],
+        motorId : motorDetails["motorId"],
         motorName: motorDetails["motorName"],
         geoLocation : motorDetails["geoLocation"],
         powerRating : motorDetails["powerRating"],
@@ -96,46 +77,4 @@ const registerMotor = async(data) => {
     console.log(motor.motorId);
 }
 
-const getData = async() =>{
-    var current = 74.0, RPM = 0.0;
-    axios.get('http://localhost:5000/voltage')
-    .then(res=> RPM = res.data)
-
-    axios.get('http://localhost:5000/current')
-    .then(res=> current = res.data)
-
-    const parameter = await Parameters.create({
-        current : current,
-        RPM : RPM
-    })
-}
-
-// const interval = setInterval(getData, 2000);
-
-router.get('/api', (req , res) =>{
-    res.send({text : "server is up and running"});
-});
-
-router.post('/api/motors', (req, res)=>{
-    registerMotor(req.body);
-    res.send('Success');
-})
-
-router.get('/api/motors',async(req,res)=>{
-    await Promise.resolve(
-        await Motor.findAll({
-            attributes : ['motorId','status', 'emergencyContact']
-        })
-    )
-    .then((data) => res.send(data));
-})
-
-router.get('/api/motor/:id', async(req, res) => {
-    const motorID = req.params.id;
-    await Promise.resolve(
-        await Motor.findByPk(motorID)
-    )
-    .then(motorDetails => res.send(motorDetails))
-})
-
-module.exports = router;
+module.exports =  registerMotor ;

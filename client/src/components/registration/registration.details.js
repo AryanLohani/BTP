@@ -50,9 +50,9 @@ export default function RegistrationDetails({motorDetails, setMotorDetails}) {
         <Grid item xs={12} sm={6}>
           <TextField
             required
-            id="power"
-            name="power"
-            label="Power"
+            id="powerRating"
+            name="powerRating"
+            label="Power Rating"
             onChange={(e)=>onChange(e)}
             fullWidth
             variant="standard"
@@ -62,9 +62,9 @@ export default function RegistrationDetails({motorDetails, setMotorDetails}) {
         <Grid item xs={12} sm={6}>
           <TextField
             required
-            id="voltage"
-            name="voltage"
-            label="Voltage"
+            id="operatingSchedule"
+            name="operatingSchedule"
+            label="Operating Schedule"
             onChange={(e)=>onChange(e)}
             fullWidth
             variant="standard"
@@ -74,9 +74,9 @@ export default function RegistrationDetails({motorDetails, setMotorDetails}) {
         <Grid item xs={12} sm={6}>
           <TextField
             required
-            id="current"
-            name="current"
-            label="Current"
+            id="Temperature"
+            name="Temperature"
+            label="Temperature"
             onChange={(e)=>onChange(e)}
             fullWidth
             variant="standard"
@@ -107,6 +107,17 @@ export default function RegistrationDetails({motorDetails, setMotorDetails}) {
           />
         </Grid>
 
+        <Grid item xs={12}>
+          <TextField
+            required
+            id="insulationQuality"
+            name="insulationQuality"
+            label="Insulation Quality"
+            onChange={(e)=>onChange(e)}
+            fullWidth
+            variant="standard"
+          />
+        </Grid>
       </Grid>
     </React.Fragment>
   );

@@ -1,7 +1,7 @@
-import * as React from 'react';
+import React, {useState} from 'react';
 import {Link} from "react-router-dom";
+import axios from 'axios';
 import { styled } from '@mui/material/styles';
-import { Typography } from '@mui/material';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell, { tableCellClasses } from '@mui/material/TableCell';
@@ -30,56 +30,34 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
     },
 }));
 
-
-function createData(motorID, emergencyContact, faultTime) {
-  return { motorID, emergencyContact, faultTime };
-}
-
-const rows = [
-  createData(
-    'motor-fake-id',
-    '494499494949',
-    '10/21/2022:02:50',
-  ),
-
-  createData(
-    'motor-fake-id2',
-    '494499494949',
-    '9/21/2022:02:15',
-  ),
-  createData(
-    'motor-fake-id3',
-    '494499494949',
-    '10/21/2022:01:50',
-  ),createData(
-    'motor-fake-id4',
-    '494499494949',
-    '10/21/2022:02:50',
-  ),
-];
-
-export default function Faults() {
+export default function Motors() {
+    const [rows, setRows] = useState([]);
+    React.useEffect(() =>{
+        axios.get('http://localhost:8080/api/motors')
+        .then(res => {
+            res.data.map(row => setRows(prev => [...prev, row]))
+        })
+    },[])
     return (
         <React.Fragment>
             <Paper sx={{m:2}}>
-            <Typography component="h1" variant="h5" align="center" sx={{ color: '#651fff', mb: 2}}> Recent Faults</Typography>
             <TableContainer component={Paper}>
                 <Table aria-label="customized table">
                     <TableHead>
                         <TableRow>
                             <StyledTableCell>Motor ID</StyledTableCell>
-                            <StyledTableCell align="right">Fault Time</StyledTableCell>
+                            <StyledTableCell align="right">Status</StyledTableCell>
                             <StyledTableCell align="right">Emergency Contact</StyledTableCell>
                             <StyledTableCell align="right">HealthCard</StyledTableCell>
                         </TableRow>
                     </TableHead>
                     <TableBody>
                         {rows.map((row) => (
-                            <StyledTableRow key={row.motorID}>
+                            <StyledTableRow key={row.motorId}>
                                 <StyledTableCell component="th" scope="row">
-                                    {row.motorID}
+                                    {row.motorId}
                                 </StyledTableCell>
-                                <StyledTableCell align="right">{row.faultTime}</StyledTableCell>
+                                <StyledTableCell align="right">{row.status}</StyledTableCell>
                                 <StyledTableCell align="right">{row.emergencyContact}</StyledTableCell>
                                 <StyledTableCell align="right"><Link to={`/healthCard/${row.motorID}`}>HealthCard</Link></StyledTableCell>
                             </StyledTableRow>
